@@ -5,9 +5,9 @@ const multer = require ('../middleware/multer-config');
 const stuffCtrl = require('../controllers/book');
 
 router.get('/',stuffCtrl.getAllBooks);
-router.post('/', auth, multer, stuffCtrl.createBook);
+router.post('/', auth, multer.single('image'), stuffCtrl.createBook);
 router.get('/:id',stuffCtrl.getOneBook);
-router.put('/:id', auth, multer, stuffCtrl.modifyBook);
+router.put('/:id', auth, multer.single('image'), stuffCtrl.modifyBook);
 router.delete('/:id', auth, stuffCtrl.deleteBook);
 
 module.exports = router;
