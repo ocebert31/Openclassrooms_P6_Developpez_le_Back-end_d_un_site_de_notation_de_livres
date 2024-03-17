@@ -24,12 +24,6 @@ app.use(express.json());
 
 app.use('/api/books', stuffRoutes);
 app.use('/api/auth', userRoutes);
-app.use('/images', express.static(path.join(__dirname, 'images')))
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 module.exports = app;
-
-
-
-// mongodb+srv://oce-bert-31:<password>@cluster1.fvu9kvo.mongodb.net/?retryWrites=true&w=majority&appName=Cluster1
-
-// mongodb+srv://oce-bert-31:<password>@cluster1.fvu9kvo.mongodb.net/
