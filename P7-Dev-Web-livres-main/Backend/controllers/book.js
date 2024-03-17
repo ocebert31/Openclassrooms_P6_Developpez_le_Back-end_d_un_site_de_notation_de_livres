@@ -12,9 +12,35 @@ exports.createBook = (req, res, next) => {
     });
   
     book.save()
-    .then(() => { res.status(201).json({message: 'Objet enregistré !'})})
+    .then(() => { res.status(201).json({message: 'Livre enregistré !'})})
     .catch(error => { res.status(400).json( { error })})
- };
+};
+
+exports.createRatingBook = (req, res, next) => {
+    const userId = req.body.userId;
+    const grade = req.body.rating;
+    Book.findOne({ _id: req.params.id})
+        .then((book) => {
+            const userRating = book.ratings.find(rating => rating.userId === userId);
+            if (userRating) {
+               return res.status(400).json({message: "Vous n'êtes pas autorisé à noter ce livre"})
+            }
+            if (grade < 1 || grade > 5) {
+                return res.status(400).json({message: "Votre note n'est pas comprise entre 1 et 5"})
+            }
+            book.ratings.push({userId, grade });
+            const ratingCount = book.ratings.length;
+            const ratingSum = book.ratings.reduce((sum, rating) => sum + rating.grade, 0);
+            book.averageRating = ratingSum / ratingCount;
+            book.averageRating = parseFloat(book.averageRating.toFixed(1));
+            book.save()
+                .then((book) => {res.status(201).json(book)})
+                .catch(() => {res.status(400).json({message: "Votre note n'a pas pu être enregistré"})});
+        })
+        .catch ((error) => {
+            res.status(404).json({error});
+        })
+};
 
  exports.modifyBook = (req, res, next) => {
     const bookObject = req.file ? {
@@ -62,6 +88,14 @@ exports.getOneBook =  (req, res, next) => {
         .then(book => res.status(200).json(book))
         .catch(error => res.status(404).json({ error }));
 }
+
+exports.createBestrating = (req, res, next) => {
+    Book.find()
+        .sort({ averageRating: -1 }) // Trier les livres en fonction de leur moyenne de notation (du plus haut au plus bas)
+        .limit(3)
+        .then(topRatedBooks => res.status(200).json(topRatedBooks))
+        .catch(error => res.status(404).json({ error }));
+};
 
 exports.getAllBooks = (req, res, next) => {
     Book.find()
