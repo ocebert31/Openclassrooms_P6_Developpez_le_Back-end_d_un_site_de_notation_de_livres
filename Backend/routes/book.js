@@ -4,7 +4,7 @@ const auth = require('../middleware/auth');
 const multer = require ('../middleware/multer-config');
 const stuffCtrl = require('../controllers/book');
 
-router.post('/', auth, multer.single('image'), stuffCtrl.createBook);
+router.post('/', auth, multer.single('image'), stuffCtrl.createBook);v
 router.post('/:id/rating', auth, stuffCtrl.createRatingBook);
 router.get('/bestrating', stuffCtrl.createBestrating);
 router.get('/',stuffCtrl.getAllBooks);
